@@ -691,7 +691,9 @@ sudo clamscan -r -i /home
 Lynis can audit your system far better than we can possibly elaborate in this document. It is recommended!
 
 ```sudo apt install lynis```
+
 Run a full audit:
+
 ```sudo lynis audit system```
 
 ### Disable Unnecessary Services
