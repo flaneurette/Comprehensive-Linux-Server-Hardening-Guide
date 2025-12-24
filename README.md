@@ -33,6 +33,8 @@ Always test configurations in a staging environment before applying to productio
 
 It is always better to do all of this *manually*, but sometimes .sh files can be useful for whatever reason.
 
+> Along the way, in a terminal window if you need to copy important information: `Ctrl+Shift+C` this will not kill a running command nor the terminal window, instead of just `Ctrl+C`.
+
 ## Initial Setup
 
 ### Update Package Lists
