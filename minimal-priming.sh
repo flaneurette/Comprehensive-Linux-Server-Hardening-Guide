@@ -1,139 +1,145 @@
 #!/bin/bash
+set -e
 
-# Exit on error
-sudo set -e
-
-# --- Variables ---
+# --- CONFIGURATION ---
 MYSQL_USER="user"
 MYSQL_DB="databasename"
-MYSQL_PASS="changeme" 
-REDIS_SERVICE="redis-server"
-DOMAIN="domain.com"        # Replace with your actual domain
-EMAIL="admin@yourdomain.com"   # Email for renewal notices
+MYSQL_PASS="changeme"
+REDIS_PASS=$(openssl rand -base64 24)
+DOMAIN="domain.com"            # Replace with your actual domain
+DOCUMENT_ROOT="/var/www/html"
+EMAIL="admin@yourdomain.com"   # Certbot notifications
 APACHE_CONF="/etc/apache2/sites-available/$DOMAIN.conf"
 
-echo "Updating system..."
-sudo apt update && sudo apt upgrade -y
+# --- COLORS ---
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
 
-echo "Installing essential packages..."
-sudo apt install -y curl ufw git fail2ban htop unzip software-properties-common
+info() { echo -e "${GREEN}[INFO]${NC} $1"; }
+warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+err() { echo -e "${RED}[ERROR]${NC} $1"; }
 
-echo "Configuring UFW firewall..."
-sudo ufw allow 22
-sudo ufw deny 6379
-sudo ufw allow OpenSSH
-sudo ufw allow 'Apache Full'
-sudo ufw --force enable
+# --- SYSTEM UPDATE ---
+info "Updating system..."
+apt update && apt upgrade -y
 
-sudo apt update && sudo apt upgrade -y
+# --- ESSENTIAL PACKAGES ---
+info "Installing essential packages..."
+apt install -y curl ufw git fail2ban htop unzip software-properties-common \
+    ca-certificates lsb-release apt-transport-https
 
-echo "Configuring Fail2Ban..."
-sudo systemctl enable fail2ban
-sudo systemctl start fail2ban
+# --- FIREWALL ---
+info "Configuring UFW..."
+ufw allow OpenSSH
+ufw allow 'Apache Full'
+ufw deny 6379
+ufw --force enable
+ufw status
 
-echo "Installing PHP packages..."
-sudo apt install -y software-properties-common ca-certificates lsb-release apt-transport-https
-sudo add-apt-repository ppa:ondrej/php -y
+# --- FAIL2BAN ---
+info "Enabling Fail2Ban..."
+systemctl enable fail2ban
+systemctl start fail2ban
 
-sudo apt update && sudo apt upgrade -y
+# --- PHP 8.4 ---
+info "Adding PHP 8.4 repository..."
+add-apt-repository ppa:ondrej/php -y
+apt update
 
-echo "Installing Apache and PHP..."
-sudo apt install -y apache2 certbot python3-certbot-apache \
-    php8.4-cli php8.4-mysql php8.4-redis php8.4-curl php8.4-mbstring \
+info "Installing PHP 8.4 and extensions..."
+apt install -y apache2 certbot python3-certbot-apache \
+    php8.4-cli php8.4-fpm php8.4-mysql php8.4-redis php8.4-curl php8.4-mbstring \
     php8.4-xml php8.4-zip php8.4-intl php8.4-soap php8.4-bcmath php8.4-gd \
-    imagemagick php8.4-common php8.4-imagick php8.4-json php8.4-ldap \
+    php8.4-imagick imagemagick php8.4-common php8.4-json php8.4-ldap \
     php8.4-pgsql php8.4-sqlite3 php8.4-xdebug php8.4-bz2
 
+systemctl restart apache2
 
-sudo systemctl restart apache2
+info "Installed PHP version: $(php -v | head -n1)"
+info "Checking installed PHP modules..."
+php -m | grep -E 'mysqli|redis|curl|mbstring|xml|zip|intl|soap|bcmath|gd|opcache|imagick|xdebug'
 
-sudo apache2 -v
-sudo php -v
+# --- MYSQL ---
+info "Installing MySQL..."
+DEBIAN_FRONTEND=noninteractive apt install -y mysql-server
 
-sudo php -m | grep -E 'mysqli|redis|curl|mbstring|xml|zip|intl|soap|bcmath|gd|opcache|imagick|xdebug'
+info "Securing MySQL..."
+mysql <<MYSQL_SCRIPT
+DELETE FROM mysql.user WHERE User='';
+DROP DATABASE IF EXISTS test;
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$MYSQL_PASS';
+FLUSH PRIVILEGES;
+MYSQL_SCRIPT
 
-echo "Apache with PHP and extensions installed successfully!"
-
-echo "Installing MySQL..."
-sudo DEBIAN_FRONTEND=noninteractive apt install -y mysql-server
-
-echo "Securing MySQL installation..."
-sudo mysql_secure_installation <<EOF
-
-y
-$MYSQL_PASS
-$MYSQL_PASS
-y
-y
-y
-y
-EOF
-
-echo "Creating MySQL user and database..."
-sudo mysql -u root -p"$MYSQL_PASS" <<MYSQL_SCRIPT
-CREATE DATABASE $MYSQL_DB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_PASS';
+info "Creating application database and user..."
+mysql -u root -p"$MYSQL_PASS" <<MYSQL_SCRIPT
+CREATE DATABASE IF NOT EXISTS $MYSQL_DB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER IF NOT EXISTS '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_PASS';
 GRANT ALL PRIVILEGES ON $MYSQL_DB.* TO '$MYSQL_USER'@'localhost';
 FLUSH PRIVILEGES;
 MYSQL_SCRIPT
 
+# --- REDIS ---
+info "Installing Redis..."
+apt install -y redis-server
 
-# Do this manually to prevent errors!
-#	echo "Securing SSH (disabling password login)..."
-#	sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
-#	sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
-#	systemctl restart sshd
+info "Securing Redis..."
+REDIS_CONF="/etc/redis/redis.conf"
+cp "$REDIS_CONF" "${REDIS_CONF}.backup"
+sed -i "s/^# requirepass .*/requirepass $REDIS_PASS/" "$REDIS_CONF"
+sed -i 's/^bind .*/bind 127.0.0.1 ::1/' "$REDIS_CONF"
+sed -i 's/^protected-mode no/protected-mode yes/' "$REDIS_CONF"
+echo "rename-command FLUSHDB \"\"" >> "$REDIS_CONF"
+echo "rename-command FLUSHALL \"\"" >> "$REDIS_CONF"
+systemctl restart redis-server
+systemctl enable redis-server
 
-sudo apt update && sudo apt upgrade -y
+info "Redis password saved: $REDIS_PASS"
 
-echo "Chowning var/www/html"
-
-sudo chown -R www-data:www-data /var/www/html
-
-# REDIS
-echo "Installing Redis..."
-sudo apt update
-sudo apt install -y redis
-
-sudo apt update
-
-# CERTBOT
-echo "Installing Let's Encrypt SSL with Certbot for Apache..."
-sudo apt install -y certbot python3-certbot-apache
-
+# --- APACHE VIRTUAL HOST ---
 if [ ! -f "$APACHE_CONF" ]; then
-	echo "Creating Apache virtual host for $DOMAIN..."
-	sudo cat <<EOF > $APACHE_CONF
+    info "Creating Apache virtual host for $DOMAIN..."
+    tee "$APACHE_CONF" > /dev/null <<EOF
 <VirtualHost *:80>
-	ServerName $DOMAIN
-	DocumentRoot /var/www/html
+    ServerName $DOMAIN
+    DocumentRoot $DOCUMENT_ROOT
 
-	ErrorLog \${APACHE_LOG_DIR}/error.log
-	CustomLog \${APACHE_LOG_DIR}/access.log combined
+    <Directory $DOCUMENT_ROOT>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog \${APACHE_LOG_DIR}/${DOMAIN}_error.log
+    CustomLog \${APACHE_LOG_DIR}/${DOMAIN}_access.log combined
 </VirtualHost>
 EOF
-	sudo a2ensite $DOMAIN
-	sudo systemctl reload apache2
+    a2ensite "$DOMAIN.conf"
+    a2dissite 000-default.conf
+    systemctl reload apache2
 fi
 
-sudo certbot --apache -d $DOMAIN --non-interactive --agree-tos -m $EMAIL
+# --- CERTBOT SSL ---
+info "Installing Let's Encrypt SSL..."
+certbot --apache -d "$DOMAIN" --non-interactive --agree-tos -m "$EMAIL" --redirect
+systemctl enable certbot.timer
+systemctl start certbot.timer
 
-sudo systemctl status certbot.timer > /dev/null 2>&1 || {
-	echo "Enabling Certbot timer for auto-renewal..."
-	sudo systemctl enable certbot.timer
-	sudo systemctl start certbot.timer
-}
+# --- APACHE MODULES ---
+a2enmod rewrite headers expires
+systemctl restart apache2
 
-echo "SSL certificate has been installed and configured for $DOMAIN"
+# --- FILE PERMISSIONS ---
+chown -R www-data:www-data "$DOCUMENT_ROOT"
+find "$DOCUMENT_ROOT" -type d -exec chmod 755 {} \;
+find "$DOCUMENT_ROOT" -type f -exec chmod 644 {} \;
 
-sudo a2enmod rewrite
-sudo a2enmod headers
-sudo a2enmod expires
-sudo systemctl restart apache2
-
-echo "Setup complete!"
-echo "Your MySQL database '$MYSQL_DB' and user '$MYSQL_USER' are ready."
-
-
-
-
+info "Setup complete!"
+echo "Domain: $DOMAIN"
+echo "MySQL Database: $MYSQL_DB"
+echo "MySQL User: $MYSQL_USER"
+echo "MySQL Password: $MYSQL_PASS"
+echo "Redis Password: $REDIS_PASS"
