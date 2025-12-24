@@ -29,7 +29,7 @@ Copy a script to a locaton on your server (usually: /usr/local/bin/ or /root/) a
   `chmod +x yourscript.sh`
   
 Check the scripts, some things might break if you are not careful. Enter all details in both .sh scripts before running it. No warranty is given. **Things might break.**
-Always test configurations in a staging environment before applying to production servers. Keep backups before making significant changes.
+Always test configurations in a staging environment before applying to production servers. Keep backups before making significant changes. Also, be sure to generate proper SSH keys before running the scripts.
 
 It is always better to do all of this *manually*, but sometimes .sh files can be useful for whatever reason.
 
