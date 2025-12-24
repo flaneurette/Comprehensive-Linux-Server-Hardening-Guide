@@ -23,6 +23,10 @@ Follow the guide below.
 
 - if you are willing to risk it run: `minimal-priming.sh` for minimal installation.
 - Or when daring: `advanced-priming.sh` for complete from the ground up linux installation and hardening.
+
+Copy a script to a locaton on your server (usually: /usr/local/bin/ or /root/) and then make it executable:
+
+  `chmod +x yourscript.sh`
   
 Check the scripts, some things might break if you are not careful. Enter all details in both .sh scripts before running it. No warranty is given. **Things might break.**
 
