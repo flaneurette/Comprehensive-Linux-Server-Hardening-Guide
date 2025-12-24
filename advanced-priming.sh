@@ -55,6 +55,12 @@ if [ -f "$SSH_CONFIG" ]; then
     print_status "SSH config backed up"
 fi
 
+cd ~
+sudo apt update
+sudo apt upgrade -y
+sudo apt dist-upgrade -y
+sudo apt autoremove -y
+
 # Create credentials file
 touch "$PASSWORD_FILE"
 chmod 600 "$PASSWORD_FILE"
