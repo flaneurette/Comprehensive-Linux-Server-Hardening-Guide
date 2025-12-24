@@ -38,8 +38,12 @@ sudo add-apt-repository ppa:ondrej/php -y
 sudo apt update && sudo apt upgrade -y
 
 echo "Installing Apache and PHP..."
-sudo apt install -y apache2 certbot python3-certbot-apache php-cli php-mysql php-redis php-curl php-mbstring php-xml php-zip php-intl php-soap php-bcmath php-gd
-sudo apt install -y imagemagick php-common php-imagick php-json php-ldap php-pgsql php-sqlite3 php-xdebug php-bz2
+sudo apt install -y apache2 certbot python3-certbot-apache \
+    php8.4-cli php8.4-mysql php8.4-redis php8.4-curl php8.4-mbstring \
+    php8.4-xml php8.4-zip php8.4-intl php8.4-soap php8.4-bcmath php8.4-gd \
+    imagemagick php8.4-common php8.4-imagick php8.4-json php8.4-ldap \
+    php8.4-pgsql php8.4-sqlite3 php8.4-xdebug php8.4-bz2
+
 
 sudo systemctl restart apache2
 
