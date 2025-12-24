@@ -39,7 +39,7 @@ sudo apt update && sudo apt upgrade -y
 
 echo "Installing Apache and PHP..."
 sudo apt install -y apache2 certbot python3-certbot-apache php-cli php-mysql php-redis php-curl php-mbstring php-xml php-zip php-intl php-soap php-bcmath php-gd
-sudo apt install -y imagemagick php-common php-imagick php8.2-imagick php8.4-imagick php-json php-ldap php-pgsql php-sqlite3 php-xdebug php-bz2
+sudo apt install -y imagemagick php-common php-imagick php-json php-ldap php-pgsql php-sqlite3 php-xdebug php-bz2
 
 sudo systemctl restart apache2
 
