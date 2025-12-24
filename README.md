@@ -764,18 +764,6 @@ Restart auditd:
 sudo service auditd restart
 ```
 
-### Install and Configure Netdata (Real-time Monitoring)
-```bash
-bash <(curl -Ss https://my-netdata.io/kickstart.sh)
-```
-
-Access at `http://your_server_ip:19999`
-
-Secure it:
-```bash
-sudo ufw allow from your_ip_address to any port 19999
-```
-
 ---
 
 ## Final Checklist
