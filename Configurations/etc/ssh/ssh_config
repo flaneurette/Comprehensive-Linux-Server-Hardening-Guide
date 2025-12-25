@@ -1,0 +1,24 @@
+# SSH Client Configuration - Hardened
+
+Include /etc/ssh/ssh_config.d/*.conf
+
+Host *
+    ForwardAgent no
+    ForwardX11 no
+    PasswordAuthentication no
+    HostbasedAuthentication no
+    GSSAPIAuthentication yes
+    GSSAPIDelegateCredentials no
+    BatchMode no
+    CheckHostIP yes
+    AddressFamily any
+    ConnectTimeout 10
+    StrictHostKeyChecking ask
+    IdentityFile ~/.ssh/id_ed25519
+    IdentityFile ~/.ssh/id_rsa
+    Port 22
+    Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
+    MACs hmac-sha2-512,hmac-sha2-256
+    EscapeChar ~
+    SendEnv LANG LC_*
+    HashKnownHosts yes
