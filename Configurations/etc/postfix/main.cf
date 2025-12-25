@@ -1,0 +1,97 @@
+# -----------------------------
+# BASIC SETTINGS
+# -----------------------------
+myhostname = mail.EXAMPLE.COM        # Replace EXAMPLE.COM with your domain
+myorigin = /etc/mailname
+mydestination = $myhostname, localhost
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+
+inet_interfaces = all
+inet_protocols = all
+compatibility_level = 3.6
+
+# -----------------------------
+# TLS SETTINGS
+# -----------------------------
+# Certificates (replace EXAMPLE.COM with your domain)
+smtpd_tls_cert_file = /etc/letsencrypt/live/mail.EXAMPLE.COM/fullchain.pem
+smtpd_tls_key_file  = /etc/letsencrypt/live/mail.EXAMPLE.COM/privkey.pem
+smtpd_tls_CAfile    = /etc/letsencrypt/live/mail.EXAMPLE.COM/chain.pem
+
+# Inbound TLS
+smtpd_tls_security_level = may
+smtpd_tls_auth_only = yes
+smtpd_tls_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+smtpd_tls_ciphers = medium
+smtpd_tls_mandatory_ciphers = medium
+smtpd_tls_loglevel = 1
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+tls_preempt_cipherlist = yes
+tls_high_cipherlist = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384
+
+# Outbound TLS
+smtp_tls_security_level = may
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtp_tls_CApath = /etc/ssl/certs
+smtp_tls_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+smtp_tls_ciphers = high
+smtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
+smtp_tls_mandatory_ciphers = high
+
+# -----------------------------
+# AUTHENTICATION (Dovecot SASL)
+# -----------------------------
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_local_domain =
+
+# -----------------------------
+# SPAM / RELAY PROTECTION
+# -----------------------------
+smtpd_recipient_restrictions =
+    permit_mynetworks
+    permit_sasl_authenticated
+    reject_unknown_sender_domain
+    reject_unauth_destination
+    reject_invalid_hostname
+    reject_non_fqdn_recipient
+    reject_rbl_client zen.spamhaus.org
+
+smtpd_data_restrictions = reject_unauth_pipelining
+smtpd_helo_restrictions =
+    permit_mynetworks
+    reject_invalid_helo_hostname
+    reject_non_fqdn_helo_hostname
+    permit
+
+disable_vrfy_command = yes
+smtpd_etrn_restrictions = reject
+
+# Rate limiting / anti-abuse
+smtpd_client_connection_rate_limit = 10
+smtpd_error_sleep_time = 5s
+smtpd_soft_error_limit = 5
+smtpd_hard_error_limit = 10
+smtpd_helo_required = yes
+smtpd_discard_ehlo_keywords = silent-discard, dsn
+
+# -----------------------------
+# MAILBOX
+# -----------------------------
+home_mailbox =
+mailbox_transport = lmtp:unix:private/dovecot-lmtp
+mailbox_size_limit = 0
+recipient_delimiter = +
+
+# -----------------------------
+# MILTER / DKIM
+# -----------------------------
+smtpd_milters = unix:/run/opendkim/opendkim.sock
+non_smtpd_milters = unix:/run/opendkim/opendkim.sock
+milter_default_action = accept
+milter_protocol = 6
