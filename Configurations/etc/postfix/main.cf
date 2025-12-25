@@ -21,6 +21,7 @@ smtpd_tls_key_file  = /etc/letsencrypt/live/mail.EXAMPLE.COM/privkey.pem
 smtpd_tls_CAfile    = /etc/letsencrypt/live/mail.EXAMPLE.COM/chain.pem
 
 # Inbound TLS
+# "medium" is useful because older (but surprisingly common) mailservers can send email to you. To be more strict set it to: "high", but you will lose e-mails.
 smtpd_tls_security_level = may
 smtpd_tls_auth_only = yes
 smtpd_tls_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
