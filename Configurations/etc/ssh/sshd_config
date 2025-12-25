@@ -1,0 +1,49 @@
+# SSH Server Configuration - Hardened
+# !BE CAREFUL! it might lock you out. Read and edit carefully.
+
+Port 22                      # Change if you want non-standard port
+AddressFamily any
+ListenAddress 0.0.0.0
+ListenAddress ::
+
+Protocol 2                   # Only SSH protocol 2
+
+# Authentication
+PermitRootLogin no            # ! Disable ROOT login !
+PasswordAuthentication no     # Key-based auth only
+ChallengeResponseAuthentication no
+UsePAM yes                    # Needed for sudo and user auth
+PubkeyAuthentication yes
+
+# Key files
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_rsa_key
+
+# Security / Encryption
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
+MACs hmac-sha2-512,hmac-sha2-256
+KexAlgorithms curve25519-sha256@libssh.org
+
+# Login settings
+LoginGraceTime 30s
+MaxAuthTries 3
+MaxSessions 2
+PermitEmptyPasswords no
+
+# Access control
+AllowUsers youruser          # Replace with your allowed SSH usernames
+# AllowGroups sshusers       # Alternatively, use a group
+
+# Connection options
+ClientAliveInterval 60
+ClientAliveCountMax 3
+X11Forwarding no
+PrintMotd no
+TCPKeepAlive yes
+
+# Logging
+SyslogFacility AUTH
+LogLevel VERBOSE
+
+# Misc
+Banner /etc/issue.net           # Optional: legal warning message
