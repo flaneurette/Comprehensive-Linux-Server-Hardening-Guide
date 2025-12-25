@@ -3,6 +3,7 @@
 # -----------------------------
 myhostname = mail.EXAMPLE.COM        # Replace EXAMPLE.COM with your domain
 myorigin = /etc/mailname
+# For more virtual hosts chain them: example1.com, example2.com etc.
 mydestination = $myhostname, localhost
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
