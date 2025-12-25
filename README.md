@@ -804,7 +804,7 @@ sudo service auditd restart
 
 ### Weekly
 - Review logwatch reports
-- Check disk space
+- Check disk space (`df -h`)
 - Review user accounts
 
 ### Monthly
