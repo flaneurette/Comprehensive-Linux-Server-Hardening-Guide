@@ -21,7 +21,7 @@ A complete guide to securing and hardening a Linux server with practical command
 
 Follow the guide below.
 
-- if you are willing to risk it run: `minimal-priming.sh` for minimal installation.
+- If you are willing to risk it run: `minimal-priming.sh` for minimal installation.
 - Or when daring: `advanced-priming.sh` for complete from the ground up linux installation and hardening.
 
 Copy a script to a locaton on your server (usually: /usr/local/bin/ or /root/) and then make it executable:
