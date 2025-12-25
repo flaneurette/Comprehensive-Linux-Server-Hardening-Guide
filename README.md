@@ -662,6 +662,10 @@ sudo mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
 Run checks:
 ```bash
 sudo aide --check
+
+or:
+
+sudo aide --config /etc/aide/aide.conf --check
 ```
 
 ### Install Rootkit Hunter
