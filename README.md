@@ -193,6 +193,8 @@ sudo systemctl enable sshd
 
 ## Firewall Configuration (UFW)
 
+> TIP: By restricting SSH access only to your home or work IP you greatly reduce unauthorized access. Redundancy: If you have a dynamic IP, but own a fixed VPN, also set the fixed VPN IP to allow the SSH port to be accesible. In this way, you always have access without locking yourself out permanently.
+
 ### Install and Configure UFW
 ```bash
 sudo apt install ufw -y
