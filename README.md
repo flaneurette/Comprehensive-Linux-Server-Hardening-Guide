@@ -723,6 +723,37 @@ Add:
 tmpfs /run/shm tmpfs defaults,noexec,nosuid 0 0
 ```
 
+# Automatically block offending IP sets
+
+### Install ipset for efficient IP blocking
+`sudo apt-get install ipset`
+
+### Create a cron job to update blocklists
+`sudo nano /etc/cron.daily/update-blocklists`
+
+Add:
+
+```
+#!/bin/bash
+# Download and apply known malicious IP lists
+
+# Create ipset if it doesn't exist
+ipset create -exist blocklist hash:net
+
+# Download Spamhaus DROP list
+curl -s https://www.spamhaus.org/drop/drop.txt | grep -v '^;' | awk '{print $1}' | while read ip; do
+    ipset add -exist blocklist "$ip"
+done
+
+# Apply to iptables
+iptables -I INPUT -m set --match-set blocklist src -j DROP
+```
+
+### Make executable:
+
+`sudo chmod +x /etc/cron.daily/update-blocklists`
+
+
 ---
 
 ## Monitoring and Logging
