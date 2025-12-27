@@ -830,6 +830,8 @@ sudo service auditd restart
 
 ## Additional hardening scripts and tools
 
+https://github.com/flaneurette/Auto-enable-UFW
+
 https://github.com/flaneurette/Comprehensive-Fail2ban-Configuration/
 
 https://github.com/flaneurette/IP-Block
