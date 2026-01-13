@@ -4,7 +4,7 @@ This very well deserves a seperate document. Few sysadmins update their `iptable
 
 Unless you want to maintain iptables6 (and few ever do it), it is better to **disable ipv6** on your server globally. This cuts the attack surface in half. 
 
-If you don't think it is an issue, run `netstat` and watch `tcp6` connections. You probably have them. They are IPv6 scanners, probing ports, or DDossing you with SYN floods. They assume no-one confugures the IPv^ firewall, and honestly, few admins ever do.
+If you don't think it is an issue, run `netstat` and watch `tcp6` connections. You probably have them. They are IPv6 scanners, probing ports, or DDossing you with SYN floods. They assume no-one confugures the IPv6 firewall, and honestly, few admins ever do.
 
 So it is better to drop IPv6 all together.
 
