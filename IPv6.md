@@ -6,7 +6,7 @@ Unless you want to maintain iptables6 (and few ever do it), it is better to **di
 
 Run:
 
-`nano /etc/sysctl.conf`
+`sudo nano /etc/sysctl.d/99-custom.conf`
 
 Add:
 
@@ -24,7 +24,7 @@ net.ipv6.conf.lo.disable_ipv6 = 1
 
 Save it, then run:
 
-`sudo sysctl -p`
+`sudo sysctl --system`
 
 `systemctl apache2 restart`
 
