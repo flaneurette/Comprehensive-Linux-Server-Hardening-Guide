@@ -2,6 +2,8 @@
 
 A complete guide to securing and hardening a Linux server with practical commands and configurations.
 
+NOTE: Be sure to **disable IPv6** if you do not use it. See the **IPv6.md** document on how to do this.
+
 ## Table of Contents
 - [Initial Setup](#initial-setup)
 - [System Updates](#system-updates)
