@@ -4,7 +4,41 @@ This very well deserves a seperate document. Few sysadmins update their `iptable
 
 Unless you want to maintain iptables6 (and few ever do it), it is better to **disable ipv6** on your server globally. This cuts the attack surface in half. 
 
-Run:
+
+Create file:
+
+`sudo nano /etc/systemd/system/disable-ipv6.service`
+
+Add:
+
+```
+[Unit]
+Description=Disable IPv6 on all interfaces
+After=network-pre.target
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/sysctl -w net.ipv6.conf.all.disable_ipv6=1
+ExecStart=/usr/sbin/sysctl -w net.ipv6.conf.default.disable_ipv6=1
+ExecStart=/usr/sbin/sysctl -w net.ipv6.conf.lo.disable_ipv6=1
+ExecStart=/usr/sbin/sysctl -w net.ipv6.conf.ens6.disable_ipv6=1
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then run this to survive reboots:
+
+```
+sudo systemctl daemon-reload
+sudo systemctl enable disable-ipv6.service
+sudo systemctl start disable-ipv6.service
+ip -6 addr show
+```
+
+Also run:
 
 `sudo nano /etc/sysctl.d/99-custom.conf`
 
@@ -32,6 +66,7 @@ Save it, then run:
 
 `systemctl dovecot restart`
 
+**REBOOT** to see if it survives, it should: `sudo reboot`
 
 # Check it
 
@@ -60,7 +95,22 @@ journalctl -f | grep -i "error\|fail\|fatal"
 # Keep monitoring casually for 24 hours
 ```
 
-# If it breaks
+# If rebooting breaks.
+
+`sudo nano /etc/default/grub`
+
+Set:
+
+`GRUB_CMDLINE_LINUX_DEFAULT="quiet splash ipv6.disable=1"`
+
+Then:
+
+```
+sudo update-grub
+sudo reboot
+```
+
+# If everything breaks
 
 ```
 # 1. Comment out the lines in /etc/sysctl.conf
