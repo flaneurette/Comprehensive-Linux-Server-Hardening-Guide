@@ -195,7 +195,7 @@ sudo systemctl enable sshd
 
 ## Firewall Configuration (UFW)
 
-Warning: It is better to learn proper IPTABLES, instead of using UFW. But for now, we use UFW to quickly lock down a server (attackers and bots are very fast these days, and we have little time to be concerned about the whims iof iptables. Do that later). Also, UFW does not add IPv6 rules automatically, another reason to disable IPv6.
+Warning: It is better to learn proper IPTABLES, instead of using UFW. But for now, we use UFW to quickly lock down a server (attackers and bots are very fast these days, and we have little time to be concerned about the whims of iptables. Do that later). Also, UFW does not add IPv6 rules automatically, another reason to disable IPv6.
 
 > TIP: By restricting SSH access only to your home or work IP you greatly reduce unauthorized access. Redundancy: If you have a dynamic IP, but own a fixed VPN, also set the fixed VPN IP to allow the SSH port to be accesible. In this way, you always have access without locking yourself out permanently.
 
