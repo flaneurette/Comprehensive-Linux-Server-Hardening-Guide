@@ -118,7 +118,7 @@ sudo reboot
 # If everything breaks
 
 ```
-# 1. Comment out the lines in /etc/sysctl.conf
+# 1. Comment out the lines in /etc/sysctl.conf or/and /etc/sysctl.d/99-custom.conf
 sudo nano /etc/sysctl.conf
 # Add # in front of the disable_ipv6 lines
 
