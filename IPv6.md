@@ -133,3 +133,17 @@ sudo systemctl restart apache2
 ip -6 addr show
 # Should show addresses again
 ```
+
+
+# Re-enable IPv6
+
+```
+sudo rm -f /etc/sysctl.d/99-custom.conf
+sudo sysctl --system
+sudo systemctl disable disable-ipv6.service
+sudo systemctl stop disable-ipv6.service
+sudo sysctl -w net.ipv6.conf.all.disable_ipv6=0
+sudo sysctl -w net.ipv6.conf.default.disable_ipv6=0
+sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=0
+sudo sysctl -w net.ipv6.conf.ens6.disable_ipv6=0
+```
