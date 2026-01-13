@@ -489,7 +489,7 @@ sudo tail -f /var/log/mod_evasive/dos-*.log
 
 ### Kernel Parameter Tuning for DDoS Protection
 ```bash
-sudo nano /etc/sysctl.conf
+sudo nano /etc/sysctl.d/99-harden.conf
 ```
 
 Add:
@@ -539,7 +539,7 @@ net.netfilter.nf_conntrack_max = 1000000
 
 Apply changes:
 ```bash
-sudo sysctl -p
+sudo sysctl --system
 ```
 
 ---
