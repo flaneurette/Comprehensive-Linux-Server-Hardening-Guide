@@ -4,6 +4,7 @@ This very well deserves a seperate document. Few sysadmins update their `iptable
 
 Unless you want to maintain iptables6 (and few ever do it), it is better to **disable ipv6** on your server globally. This cuts the attack surface in half. 
 
+For maximum reliability, use a **systemd service** to disable IPv6 on all interfaces at boot. This works even on cloud VPS servers that attempt to force IPv6 via RA/DHCPv6.
 
 Create file:
 
