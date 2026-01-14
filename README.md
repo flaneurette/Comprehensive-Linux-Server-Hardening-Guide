@@ -197,7 +197,13 @@ sudo systemctl enable sshd
 
 **Warning**: It is better to learn proper IPTABLES, instead of using UFW. But for now, we use UFW to quickly lock down a server (attackers and bots are very fast these days, and we have little time to be concerned about the whims of iptables. Do that later). Also, UFW does not add IPv6 rules automatically, another reason to **disable IPv6** on a fresh machine.
 
-> TIP: By restricting SSH access only to your home or work IP you greatly reduce unauthorized access. Redundancy: If you have a dynamic IP, but own a fixed VPN, also set the fixed VPN IP to allow the SSH port to be accesible. In this way, you always have access without locking yourself out permanently.
+> By restricting SSH access only to your home or work IP you greatly reduce unauthorized access. Redundancy: If you have a dynamic IP, but own a fixed VPN, also set the fixed VPN IP to allow the SSH port to be accesible. In this way, you always have access without locking yourself out permanently.
+
+### Run firewall.sh
+
+TIP: run `firewall.sh` on your server, instead of adding these **UFW rules below**. Be sure sure to edit the script, and whitelist your own IP's and set all ports.
+
+If you find it scary to run the bash script, then proceed below with UFW instead.
 
 ### Install and Configure UFW
 ```bash
@@ -209,11 +215,11 @@ sudo ufw default allow outgoing
 
 # IMPORTANT: Allow SSH from specific IP/range ONLY (prevents lockout)
 # Replace with your actual IP address or range
-sudo ufw allow from 777.7.777.7/24 to any port 2222 proto tcp comment 'YOUR IP: 777.7.777.7 SSH from office'
+sudo ufw allow from 777.7.777.7/24 to any port 2222 proto tcp
 # OR for a single IP:
-sudo ufw allow from 777.7.777.7 to any port 2222 proto tcp comment 'YOUR IP: 777.7.777.7 SSH from admin'
+sudo ufw allow from 777.7.777.7 to any port 2222 proto tcp
 # OR for standard port 22:
-sudo ufw allow from 777.7.777.7 to any port 22 proto tcp comment 'YOUR IP: 777.7.777.7 SSH from admin'
+sudo ufw allow from 777.7.777.7 to any port 22 proto tcp
 
 # Allow HTTP and HTTPS (publicly accessible)
 sudo ufw allow 80/tcp
@@ -239,7 +245,7 @@ sudo ufw status numbered  # Shows rule numbers
 sudo ufw deny from 192.0.2.100
 
 # Allow specific IP to specific port only
-sudo ufw allow from 777.7.777.7 to any port 3306 proto tcp comment 'MySQL from app server'
+sudo ufw allow from 777.7.777.7 to any port 3306 proto tcp
 
 # Log denied connections (useful for monitoring)
 sudo ufw logging on
