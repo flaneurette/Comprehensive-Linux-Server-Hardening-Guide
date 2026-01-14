@@ -201,7 +201,7 @@ sudo systemctl enable sshd
 
 ### Run firewall.sh
 
-TIP: run `firewall.sh` on your server, instead of adding these **UFW rules below**. Be sure sure to edit the script, and whitelist your own IP's and set all ports.
+TIP: run the attached script `firewall.sh` on your server, instead of adding these **UFW rules below**. Be sure sure to edit the script, and whitelist your own IP's and set all ports.
 
 If you find it scary to run the bash script, then proceed below with UFW instead.
 
