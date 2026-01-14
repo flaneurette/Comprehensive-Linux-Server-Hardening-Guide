@@ -49,4 +49,23 @@ for port in "${PUBLIC_PORTS[@]}"; do
 done
 
 # Save rules
+iptables-save > /etc/iptables/rules.v4
 netfilter-persistent save
+
+# ANSI color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo -e "${YELLOW}Manually check your iptables rules:${NC}\n"
+
+echo -e "1. List rules with line numbers:"
+echo -e "   ${GREEN}iptables -L INPUT --line-numbers -n -v${NC}\n"
+
+echo -e "2. Look for a line like:"
+echo -e "   ${RED}ACCEPT  0  --  0.0.0.0/0  0.0.0.0/0${NC}\n"
+
+echo -e "3. If it exists, delete that rule using its line number, e.g.:"
+echo -e "   ${GREEN}iptables -D INPUT 11${NC}  # Replace 11 with the actual number"
+
