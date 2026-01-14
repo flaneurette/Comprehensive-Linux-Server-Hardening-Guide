@@ -1,8 +1,8 @@
 # Disable IPv6
 
-This very well deserves a seperate document. Few sysadmins update their `iptables6`, because it's hard. They have to convert all IPv4 to IPv6. No-one likes doing that. Attackers know this, and they will scan IPv6, often without the admin realizing.
+This very well deserves a seperate document. Few sysadmins update their `ip6tables`, because it's hard. They have to convert all IPv4 addresses to IPv6. No-one likes doing that. Attackers know this, and they will scan IPv6, often without the admin realizing.
 
-Unless you want to maintain iptables6 (and few ever do it), it is better to **disable ipv6** on your server globally. This cuts the attack surface in half. 
+Unless you want to maintain ip6tables (and few ever do it), it is better to **disable ipv6** on your server globally. This also cuts the attack surface in half, especially if IPv6 is misconfigured, rules suddenly dropped after fail2ban flush (Yes, that can happen). Etc.
 
 If you don't think it is an issue, run `netstat` and watch `tcp6` connections. You probably have them. They are IPv6 scanners, probing ports, or DDossing you with SYN floods. They assume no-one configures the IPv6 firewall, and honestly, few admins ever do.
 
