@@ -67,5 +67,5 @@ echo -e "2. Look for a line like:"
 echo -e "   ${RED}ACCEPT  0  --  0.0.0.0/0  0.0.0.0/0${NC}\n"
 
 echo -e "3. If it exists, delete that rule using its line number, e.g.:"
-echo -e "   ${GREEN}iptables -D INPUT 11${NC}  # Replace 11 with the actual number"
+echo -e "   ${GREEN}iptables -D INPUT 10${NC}  # Replace 10 with the actual number"
 
