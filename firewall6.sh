@@ -1,4 +1,12 @@
 #!/bin/bash
+# IPv6 ONLY!
+# To generate a random IPv6 address on your block:
+# ip=$(printf "<YourClientIPv6block>:%04x:%04x:%04x:%04x" \
+# $((RANDOM % 65536)) \
+# $((RANDOM % 65536)) \
+# $((RANDOM % 65536)) \
+# $((RANDOM % 65536)))
+# echo $ip
 
 # Block everything, except for user-defined IP addresses and public ports.
 
