@@ -15,6 +15,9 @@ ChallengeResponseAuthentication no
 UsePAM yes                    # Needed for sudo and user auth
 PubkeyAuthentication yes
 
+# Set explicit host key algorithms
+HostKeyAlgorithms ssh-ed25519,rsa-sha2-512,rsa-sha2-256
+
 # Key files
 HostKey /etc/ssh/ssh_host_ed25519_key
 HostKey /etc/ssh/ssh_host_rsa_key
@@ -44,6 +47,24 @@ TCPKeepAlive yes
 # Logging
 SyslogFacility AUTH
 LogLevel VERBOSE
+
+# Disable unused authentication methods
+KerberosAuthentication no
+GSSAPIAuthentication no
+
+# Prevent users from setting environment variables via SSH
+PermitUserEnvironment no
+
+# Disable port forwarding (already have TCP, add these)
+AllowStreamLocalForwarding no
+GatewayPorts no
+
+# Restrict sftp if you do not need it
+# Subsystem sftp /usr/lib/openssh/sftp-server
+
+# Ignore user known hosts and rhosts (extra hardening)
+IgnoreRhosts yes
+IgnoreUserKnownHosts yes
 
 # Misc
 Banner /etc/issue.net           # Optional: legal warning message
