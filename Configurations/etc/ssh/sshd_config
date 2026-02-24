@@ -34,7 +34,7 @@ MaxSessions 2
 PermitEmptyPasswords no
 
 # Access control
-AllowUsers youruser          # Replace with your allowed SSH usernames
+# AllowUsers youruser        # Replace with your allowed SSH usernames
 # AllowGroups sshusers       # Alternatively, use a group
 
 # Connection options
