@@ -116,80 +116,11 @@ lcredit = -1
 
 ---
 
-## SSH Hardening
+## SSH
 
-### Install and Configure SSH
-```bash
-sudo apt install openssh-server -y
-sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
-sudo nano /etc/ssh/sshd_config
-```
+Follow this guide:
 
-### Generate and Deploy SSH Keys
-
-On your local machine:
-```bash
-ssh-keygen -t ed25519 -C "your_email@example.com"
-ssh-copy-id -i ~/.ssh/id_ed25519.pub deployuser@your_server_ip -p 2222
-```
-
-Or manually:
-```bash
-# On server
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-nano ~/.ssh/authorized_keys
-# Paste your public key
-chmod 600 ~/.ssh/authorized_keys
-```
-
-
-### Recommended SSH Configuration
-```conf
-# Change default port (choose something between 1024-65535)
-Port 2222
-
-# Disable root login
-PermitRootLogin no
-
-# Use SSH Protocol 2 only
-Protocol 2
-
-# Limit authentication attempts
-MaxAuthTries 3
-MaxSessions 2
-
-# Disable password authentication (IMPORTANT: ! after setting up SSH keys !)
-PasswordAuthentication no
-PubkeyAuthentication yes
-PermitEmptyPasswords no
-
-# Disable X11 forwarding
-X11Forwarding no
-
-# Set login grace time
-LoginGraceTime 30
-
-# Allow specific users only
-AllowUsers deployuser
-
-# Disable host-based authentication
-HostbasedAuthentication no
-
-# Client timeout
-ClientAliveInterval 300
-ClientAliveCountMax 2
-
-# Disable tunneling
-PermitTunnel no
-AllowTcpForwarding no
-```
-
-### Restart SSH Service
-```bash
-sudo systemctl restart sshd
-sudo systemctl enable sshd
-```
+https://github.com/flaneurette/SSH-Ed25519-Key-Generation-Guide
 
 ---
 
@@ -542,7 +473,7 @@ net.ipv6.conf.default.accept_redirects = 0
 fs.file-max = 65535
 
 # Connection tracking
-net.netfilter.nf_conntrack_max = 1000000
+# net.netfilter.nf_conntrack_max = 1000000
 ```
 
 Apply changes:
