@@ -723,26 +723,6 @@ sudo service auditd restart
 
 ---
 
-## Final Checklist
-
-- [ ] System fully updated
-- [ ] Non-root user created with sudo privileges
-- [ ] Root login disabled
-- [ ] SSH hardened with key-based authentication
-- [ ] Firewall configured and enabled
-- [ ] Fail2Ban installed and running
-- [ ] Apache secured with ModSecurity
-- [ ] DDoS protection measures in place
-- [ ] Mail server configured with TLS
-- [ ] Automatic security updates enabled
-- [ ] File integrity monitoring set up
-- [ ] Rootkit scanner installed
-- [ ] Antivirus installed
-- [ ] Logging and monitoring configured
-- [ ] Regular backups scheduled
-
----
-
 ## Regular Maintenance Tasks
 
 ### Daily
